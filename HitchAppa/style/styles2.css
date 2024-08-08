@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: black;
+    color: whitesmoke;
+    font-size: 16px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 90vh;
+    color: whitesmoke;
+    
+}
+
+h1, h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* form {
+    background: #286e9c;
+    display: flex;
+    flex-direction: column;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 0 128px 0 rgba(0,0,0,0.1), 0 32px 64px -48px rgba(0,0,0,0.5);
+    width: 100%;
+    max-width: 450px;
+    margin-bottom: 20px;
+} */
+
+form input[type="text"], 
+form input[type="datetime-local"], 
+form input[type="number"],
+form select {
+    height: 40px;
+    width: 100%;
+    font-size: 16px;
+    padding: 0 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+    margin-bottom: 10px;
+}
+
+form input[type="submit"] {
+    background: rgba(0, 20, 58, 0.808);
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all .3s;
+    margin-top: 10px;
+    padding: 10px 20px;
+}
+
+form input[type="submit"]:hover {
+    opacity: 0.82;
+}
+
+.ride {
+    background: #1b4a6b;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 128px 0 rgba(0,0,0,0.1), 0 32px 64px -48px rgba(0,0,0,0.5);
+    width: 100%;
+    max-width: 450px;
+    color: whitesmoke;
+}
+
+.ride p {
+    margin-bottom: 10px;
+}
+
+.ride form {
+    margin-top: 10px;
+}
+
+.ride form input[type="submit"] {
+    width: 100%;
+    background: rgba(0, 20, 58, 0.808);
+}
+
+div a{
+    color: #2b48eb;
+    text-decoration: none;
+    font-size: 18px;
+    position: relative;
+}
+
+div a::after {
+    content: '';
+    width: 0;
+    height: 3px;
+    background: rgba(67, 128, 241, 0.808);
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    transition: width 0.5s;
+}
+
+div a:hover::after {
+    width: 100%;
+}
+
+.message {
+    text-align: center;
+    background: #f9eded;
+    padding: 15px 0px;
+    border: 1px solid #699053;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    color: red;
+}
+
+.back a{
+    color:#1b4a6b;
+    font-weight: bold;
+    margin-top: 20px;
+}
