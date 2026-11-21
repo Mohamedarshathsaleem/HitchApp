@@ -32,16 +32,24 @@
          
          include("php/config.php");
          if(isset($_POST['submit'])){
-            $username = $_POST['username'];
-            $email = $_POST['email'];
-            $age = $_POST['age'];
-            $password = $_POST['password'];
+            $username = trim($_POST['username'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $age = (int) ($_POST['age'] ?? 0);
+            $password = $_POST['password'] ?? '';
 
          //verifying the unique email
+         $verify = $conn->prepare("SELECT 1 FROM users WHERE email = ?");
+         $verify->bind_param("s", $email);
+         $verify->execute();
+         $verify->store_result();
 
-         $verify_query = mysqli_query($conn,"SELECT Email FROM users WHERE Email='$email'");
-
-         if(mysqli_num_rows($verify_query) !=0 ){
+         if(!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($password) < 8){
+            echo "<div class='message'>
+                      <p>Please enter a valid email and a password of at least 8 characters.</p>
+                  </div> <br>";
+            echo "<a href='javascript:self.history.back()'><button class='btn'>Go Back</button>";
+         }
+         elseif($verify->num_rows != 0){
             echo "<div class='message'>
                       <p>This email is used, Try another One Please!</p>
                   </div> <br>";
@@ -49,7 +57,11 @@
          }
          else{
 
-            mysqli_query($conn,"INSERT INTO users(Username,Password,Age,Email) VALUES('$username','$password','$age','$email')") or die("Error Occurred");
+            // Store a bcrypt hash, never the plain password
+            $hash = password_hash($password, PASSWORD_DEFAULT);
+            $insert = $conn->prepare("INSERT INTO users (username, password, age, email) VALUES (?, ?, ?, ?)");
+            $insert->bind_param("ssis", $username, $hash, $age, $email);
+            $insert->execute();
 
             echo "<div class='message'>
                       <p>Registration successful!</p>

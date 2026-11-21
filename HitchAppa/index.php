@@ -1,11 +1,10 @@
 <?php 
    session_start();
-    // Ensure the email variable is set correctly
+    // Remember the last-used email for 30 days (HttpOnly so scripts can't read it)
     $email = $_POST['email'] ?? null;
 
-    if ($email) {
-        // Set cookie for 30 days if the email is present
-        setcookie("email", $email, time() + (86400 * 30), "/"); // "/" means cookie is available in the entire domain
+    if ($email && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        setcookie("email", $email, ['expires' => time() + 86400 * 30, 'path' => '/', 'httponly' => true, 'samesite' => 'Lax']);
     }
 ?>
 <!DOCTYPE html>
@@ -41,13 +40,17 @@
              
               include("php/config.php");
               if(isset($_POST['submit'])){
-                $email = mysqli_real_escape_string($conn,$_POST['email']);
-                $password = mysqli_real_escape_string($conn,$_POST['password']);
+                $email = trim($_POST['email'] ?? '');
+                $password = $_POST['password'] ?? '';
 
-                $result = mysqli_query($conn,"SELECT * FROM users WHERE Email='$email' AND Password='$password' ") or die("Select Error");
-                $row = mysqli_fetch_assoc($result);
+                // Prepared statement: user input never becomes part of the SQL text
+                $stmt = $conn->prepare("SELECT id, username, email, age, password FROM users WHERE email = ?");
+                $stmt->bind_param("s", $email);
+                $stmt->execute();
+                $row = $stmt->get_result()->fetch_assoc();
 
-                if(is_array($row) && !empty($row)){
+                if($row && password_verify($password, $row['password'])){
+                    session_regenerate_id(true); // prevent session fixation
                     $_SESSION['valid'] = $row['email'];
                     $_SESSION['username'] = $row['username'];
                     $_SESSION['age'] = $row['age'];
@@ -61,6 +64,7 @@
                 }
                 if(isset($_SESSION['valid'])){
                     header("Location: home.php");
+                    exit;
                 }
               }else{
 
