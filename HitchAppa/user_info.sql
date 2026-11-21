@@ -62,7 +62,7 @@ CREATE TABLE `rides` (
 --
 
 INSERT INTO `rides` (`id`, `name`, `start_location`, `end_location`, `date_time`, `available_seats`, `user_id`) VALUES
-(1, 'a', 'kangar', 'alor setar', '2024-07-06 13:42:00', 1, 1);
+(1, 'Weekend trip home', 'Kangar', 'Alor Setar', '2024-07-06 13:42:00', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -75,19 +75,17 @@ CREATE TABLE `users` (
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
   `age` int(11) NOT NULL,
-  `email` varchar(30) NOT NULL
+  `email` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
+-- Demo accounts (password for both: demo-pass-123)
 INSERT INTO `users` (`id`, `username`, `password`, `age`, `email`) VALUES
-(1, 'acad', 'acad123', 21, 'acad@gmail.com'),
-(2, 'shahir', 'shahir123', 22, 'shahir@gmail.com'),
-(3, 'khair', '123', 22, 'khair@utm.my'),
-(4, 'naqib', '123', 21, 'naqib'),
-(5, 'uso', 'uso123', 21, 'uso');
+(1, 'driver_demo', '$2y$10$aJtD0vaFhRColxNvPrqz3eJfmfKO2ZhWQlZNgSX9dwEzUB7eoEMci', 21, 'driver@example.com'),
+(2, 'rider_demo', '$2y$10$yl3z8JP.gMKz9uNMdIN3HOD814aGM/B51obhnyhwFtrbdCbHthCZ6', 22, 'rider@example.com');
 
 --
 -- Indexes for dumped tables

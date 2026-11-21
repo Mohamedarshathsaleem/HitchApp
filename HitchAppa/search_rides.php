@@ -7,7 +7,9 @@ $search_performed = false;
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['start_location']) && isset($_GET['end_location'])) {
     $start_location = $_GET['start_location'];
     $end_location = $_GET['end_location'];
-    $sort_by = $_GET['sort_by'] ?? 'date_time' ?? 'available_seats';
+    // ORDER BY can't be a bound parameter, so only allow known column names
+    $allowed_sorts = ['date_time' => 'r.date_time', 'available_seats' => 'r.available_seats DESC'];
+    $sort_by = $allowed_sorts[$_GET['sort_by'] ?? 'date_time'] ?? 'r.date_time';
 
     $sql = "SELECT r.*, u.username AS driver_username 
             FROM rides r 

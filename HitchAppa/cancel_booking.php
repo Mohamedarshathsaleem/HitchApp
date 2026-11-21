@@ -16,7 +16,7 @@ $user_id = $_SESSION['id'] ?? null;
 $ride_id = $_POST['ride_id'] ?? null;
 
 if (!$user_id || !$ride_id) {
-    header("Location: login.php");
+    header("Location: index.php");
     exit;
 }
 

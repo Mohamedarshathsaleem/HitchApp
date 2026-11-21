@@ -1,21 +1,11 @@
-<?php 
- 
- $conn = mysqli_connect("localhost","root","","user_info") or die("Couldn't connect");
-
-?>
-
 <?php
-// // Database credentials
-// $servername = "localhost";  // Replace with your MySQL server hostname or IP address
-// $username = "root";
-// $password = "";
-// $database = "hitchapp";  // Replace with your MySQL database name
+// Database connection. Override the defaults with environment variables in production.
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-// // Create connection
-// $conn = new mysqli($servername, $username, $password, $database);
-
-// // Check connection
-// if ($conn->connect_error) {
-//     die("Connection failed: " . $conn->connect_error);
-// }
-?>
+$conn = new mysqli(
+    getenv('DB_HOST') ?: 'localhost',
+    getenv('DB_USERNAME') ?: 'root',
+    getenv('DB_PASSWORD') ?: '',
+    getenv('DB_DATABASE') ?: 'user_info'
+);
+$conn->set_charset('utf8mb4');

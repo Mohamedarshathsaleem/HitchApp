@@ -4,6 +4,7 @@
    include("php/config.php");
    if(!isset($_SESSION['valid'])){
     header("Location: index.php");
+    exit;
    }
 ?>
 <!DOCTYPE html>
@@ -30,13 +31,15 @@
         <div class="box form-box">
             <?php 
                if(isset($_POST['submit'])){
-                $username = $_POST['username'];
-                $email = $_POST['email'];
-                $age = $_POST['age'];
+                $username = trim($_POST['username'] ?? '');
+                $email = trim($_POST['email'] ?? '');
+                $age = (int) ($_POST['age'] ?? 0);
 
-                $id = $_SESSION['id'];
+                $id = (int) $_SESSION['id'];
 
-                $edit_query = mysqli_query($conn,"UPDATE users SET Username='$username', Email='$email', Age='$age' WHERE Id=$id ") or die("error occurred");
+                $stmt = $conn->prepare("UPDATE users SET username = ?, email = ?, age = ? WHERE id = ?");
+                $stmt->bind_param("ssii", $username, $email, $age, $id);
+                $edit_query = $stmt->execute();
 
                 if($edit_query){
                     echo "<div class='message'>
@@ -47,15 +50,16 @@
                 }
                }else{
 
-                $id = $_SESSION['id'];
-                $query = mysqli_query($conn,"SELECT*FROM users WHERE Id=$id ");
+                $id = (int) $_SESSION['id'];
+                $stmt = $conn->prepare("SELECT username, email, age FROM users WHERE id = ?");
+                $stmt->bind_param("i", $id);
+                $stmt->execute();
+                $result = $stmt->get_result()->fetch_assoc();
 
-                while($result = mysqli_fetch_assoc($query)){
-                    $res_Uname = $result['username'];
-                    $res_Email = $result['email'];
-                    $res_Age = $result['age'];
-                    $res_Password = $result['password'];
-                }
+                // Escape before echoing into HTML to prevent stored XSS
+                $res_Uname = htmlspecialchars($result['username'], ENT_QUOTES);
+                $res_Email = htmlspecialchars($result['email'], ENT_QUOTES);
+                $res_Age = (int) $result['age'];
 
             ?>
             <header>Change Profile</header>
@@ -75,11 +79,6 @@
                     <input type="number" name="age" id="age" value="<?php echo $res_Age; ?>" autocomplete="off" required>
                 </div>
 
-                <div class="field input">
-                    <label for="password">Password</label>
-                    <input type="text" name="password" id="password" value="<?php echo $res_Password; ?>" autocomplete="off" required>
-                </div>
-                
                 <div class="field">
                     
                     <input type="submit" class="btn" name="submit" value="Update" required>

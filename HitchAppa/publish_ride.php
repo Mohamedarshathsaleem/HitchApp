@@ -10,10 +10,10 @@ if (!isset($_SESSION['id'])) {
 
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Sanitize input data
-    $name = htmlspecialchars($_POST['name']);
-    $start_location = htmlspecialchars($_POST['start_location']);
-    $end_location = htmlspecialchars($_POST['end_location']);
+    // Store raw input; it is escaped with htmlspecialchars when displayed
+    $name = trim($_POST['name'] ?? '');
+    $start_location = trim($_POST['start_location'] ?? '');
+    $end_location = trim($_POST['end_location'] ?? '');
     $date_time = $_POST['date_time'];
     $available_seats = intval($_POST['available_seats']);
 

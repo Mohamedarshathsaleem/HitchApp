@@ -4,6 +4,7 @@
    include("php/config.php");
    if(!isset($_SESSION['valid'])){
     header("Location: index.php");
+    exit;
    }
 ?>
 
@@ -32,15 +33,16 @@
 
             <?php 
             
-            $id = $_SESSION['id'];
-            $query = mysqli_query($conn,"SELECT*FROM users WHERE Id=$id");
+            $id = (int) $_SESSION['id'];
+            $stmt = $conn->prepare("SELECT id, username, email, age FROM users WHERE id = ?");
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $result = $stmt->get_result()->fetch_assoc();
 
-            while($result = mysqli_fetch_assoc($query)){
-                $res_Uname = $result['username'];
-                $res_Email = $result['email'];
-                $res_Age = $result['age'];
-                $res_id = $result['id'];
-            }
+            $res_Uname = htmlspecialchars($result['username'], ENT_QUOTES);
+            $res_Email = htmlspecialchars($result['email'], ENT_QUOTES);
+            $res_Age = (int) $result['age'];
+            $res_id = (int) $result['id'];
             echo "<a href='activity.php'>My Activity</a>";  
             echo "<p ></p>";         
             echo "<a href='edit.php?Id=$res_id'>Edit Profile</a>";
