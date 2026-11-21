@@ -1,0 +1,23 @@
+name: PHP lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+      - name: Syntax-check every PHP file
+        run: find . -name "*.php" -print0 | xargs -0 -n1 php -l
+      - name: Fail if raw user input is interpolated into SQL
+        run: |
+          if grep -rnE "mysqli_query\(.*\\\$_(GET|POST)|mysqli_query\(\\\$conn, *\"[^\"]*'\\\$" --include=*.php .; then
+            echo "::error::Use prepared statements instead of building SQL from variables"; exit 1
+          fi
